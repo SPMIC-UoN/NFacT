@@ -29,8 +29,6 @@ function join_str { local IFS="$1"; shift; echo "$*"; }
 
 shopt -s extglob
 
-code_folder="$HOME/scripts_dev/nmf_addon/v0.1/nfact_py"
-
 Splash (){
 cat <<EOF
 
@@ -63,6 +61,7 @@ Usage:
        -rois         <left> <right>               Paths to the left and right medial wall masks (GIFTI)
 
     Optional arguments:
+       -nfactdir     <path>                         The directory which contains the nfact_averaging script (default: $MRCATDIR/projects/NFACT/nfact_code/nfact_py)
        -n_comp                                    Number of components used in the NMF decomposition (default = 100)
 
 
@@ -90,6 +89,7 @@ left_seed=""
 right_seed=""
 left_roi=""
 right_roi=""
+code_folder="$MRCATDIR/projects/NFACT/nfact_code/nfact_py"
 n_components=100
 
 # Parse command-line arguments
@@ -99,6 +99,7 @@ while [ ! -z "$1" ];do
   -sub_dir) sub_dir=$2;shift;;
   -seeds) left_seed=$2;right_seed=$3;shift;shift;;
   -rois) left_roi=$2;right_roi=$3;shift;shift;;
+  -nfactdir) code_folder=$2;shift;;
   -n_comp) n_components=$2;shift;;
 	*) echo "Unknown option '$1'";exit 1;;
     esac

@@ -39,6 +39,7 @@ Usage:
        -rois         <left> <right>               Paths to the left and right medial wall masks (GIFTI)
 
     Optional arguments:
+       -nfactdir     <path>                         The directory which contains the nfact_averaging script (default: $MRCATDIR/projects/NFACT/nfact_code/nfact_py)
        -n_comp                                    Number of components used in the NMF decomposition (default = 100)
 
 
@@ -147,10 +148,11 @@ Usage:
        -ref          <path>                         The full path to the standard space target (e.g. MNI152 brain mask)
 
     Optional arguments:
+       -nfactdir     <path>                         The directory which contains the nfact_averaging script (default: $MRCATDIR/projects/NFACT/nfact_code/nfact_py)
+       -blueprintdir <path>                         The directory which contains the xtract_blueprint script (default: $FSLDIR/bin)
        -prefix       <str>                          Designate a prefix to the group-level output directory name (default directory name: <study>/nfact)
        -out          <folder>                       Path to output folder (default is to create subject-level output under the input subject directory and group-level under the study folder)
        -no_average                                  Do not perform connectivity matrix averaging - required for NMF (default averages across all subjects)
-
        -gpu                                         Use GPU version
        -nsamples                                    Number of samples per seed used in tractography (default = 1000)
        -res          <mm>                           Resolution of NMF volume components (Default = 2 mm)
@@ -249,7 +251,9 @@ Usage:
        -nfact_dir    <folder>                     Directory containing the target group-level NFacT connectivity matrix
 
     Optional arguments:
+       -nfactdir     <path>                         The directory which contains the nfact_dr script (default: $MRCATDIR/projects/NFACT/nfact_code/nfact_py)
        -out          <path>                       Output directory for dual regression results (default <nfact_dir>)
+           -n_cores      <int>                        The number of cores to use in dual regression (default = 1)
 
 Example call:
 
