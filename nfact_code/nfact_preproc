@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # Written by Shaun Warrington, Ellie Thompson and Stam Sotiropoulos
+# Updated by Jasper Hunt to change default code directories, add optional arguments for passing in custom code directories. 10 March, 2023.
+# Updated by Jasper Hunt to implement support for options.txt. 21 March, 2023.
 
 # function to submit python jobs (to cluster or local) with dependencies
 run_python(){
@@ -28,9 +30,6 @@ function join_str { local IFS="$1"; shift; echo "$*"; }
 
 shopt -s extglob
 
-code_folder="$HOME/scripts_dev/nmf_addon/v0.1/nfact_py"
-blueprint_code_folder="$HOME/scripts_dev/xtract_blueprint"
-
 Splash (){
 cat <<EOF
 
@@ -45,6 +44,7 @@ cat <<EOF
 EOF
 }
 Splash
+
 
 
 Usage() {
@@ -66,6 +66,8 @@ Usage:
        -ref          <path>                         The full path to the standard space target (e.g. MNI152 brain mask)
 
     Optional arguments:
+       -nfactdir     <path>                         The directory which contains the nfact_averaging script (default: $MRCATDIR/projects/NFACT/nfact_code/nfact_py)
+       -blueprintdir <path>                         The directory which contains the xtract_blueprint script (default: $FSLDIR/bin)
        -prefix       <str>                          Designate a prefix to the group-level output directory name (default directory name: <study>/nfact_group)
        -out          <folder>                       Path to output folder (default is to create subject-level output under the input subject directory and group-level under the study folder)
        -no_average                                  Do not perform connectivity matrix averaging - required for NMF (default averages across all subjects)
@@ -112,6 +114,9 @@ gpu=0
 no_average=0
 res=2
 nsamples=1000
+code_folder="$MRCATDIR/projects/NFACT/nfact_code/nfact_py"
+blueprint_code_folder="$FSLDIR/bin"
+ptx_options=""
 
 # Parse command-line arguments
 while [ ! -z "$1" ];do
@@ -129,6 +134,9 @@ while [ ! -z "$1" ];do
   -no_average) no_average=1;;
 	-res) res=$2;shift;;
   -nsamples) nsamples=$2;shift;;
+  -nfactdir) code_folder=$2;shift;;
+  -blueprintdir) blueprint_code_folder=$2;shift;;
+  -ptx_options) ptx_options=$2;shift;;
 	*) echo "Unknown option '$1'";exit 1;;
     esac
     shift
@@ -284,6 +292,9 @@ for id in `cat $subject_list`; do
   args="$args -xtract $sub_out/tmpx -tract_list null" # provide fake xtract arguments
   if [ $gpu == 1 ]; then
     args="$args -gpu"
+  fi
+  if [ "$ptx_options" != "" ];then
+    args="$args -ptx_options $ptx_options"
   fi
 
   # submit job and capture job ID is SGE_ROOT

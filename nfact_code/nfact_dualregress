@@ -29,8 +29,6 @@ function join_str { local IFS="$1"; shift; echo "$*"; }
 
 shopt -s extglob
 
-code_folder="$HOME/scripts_dev/nmf_addon/v0.1/nfact_py"
-
 Splash (){
 cat <<EOF
 
@@ -65,6 +63,7 @@ Usage:
        -nfact_dir    <folder>                     Directory containing the target group-level NFacT connectivity matrix
 
     Optional arguments:
+       -nfactdir     <path>                         The directory which contains the nfact_dr script (default: $MRCATDIR/projects/NFACT/nfact_code/nfact_py)
        -out          <path>                       Output directory for dual regression results (default <nfact_dir>)
        -n_cores      <int>                        The number of cores to use in dual regression (default = 1)
 
@@ -94,6 +93,7 @@ left_seed=""
 right_seed=""
 left_roi=""
 right_roi=""
+code_folder="$MRCATDIR/projects/NFACT/nfact_code/nfact_py"
 out=""
 n_cores=1
 
@@ -105,6 +105,7 @@ while [ ! -z "$1" ];do
   -sub_dir) sub_dir=$2;shift;;
   -seeds) left_seed=$2;right_seed=$3;shift;shift;;
   -rois) left_roi=$2;right_roi=$3;shift;shift;;
+  -nfactdir) code_folder=$2;shift;;
   -out) out=$2;shift;;
   -n_cores) n_cores=$2;shift;;
 	*) echo "Unknown option '$1'";exit 1;;

@@ -2,18 +2,15 @@
 
 NFacT (Non-negative matrix Factorisation of Tractography data) uses NMF (non-negative matrix factorisation) to perform data-driven tractography and may to be applied to a structural connectivity matrix derived from any brain in principle.
 
-The script was written by Shaun Warrington, Ellie Thompson, and Stamatios Sotiropoulos.
+The script was written by Ellie Thompson, Shaun Warrington and Stamatios Sotiropoulos.
 
 ---------------------------------------------------------------------
 
 ## Citations:
 
+# for NMF routines:
+
 Thompson E, Mohammadi-Nejad AR, Robinson EC, Andersson JLR, Jbabdi S, Glasser MF, Bastiani M, Sotiropoulos SN (2020) Non-negative data-driven mapping of structural connections with application to the neonatal brain. NeuroImage. DOI: 10.1016/j.neuroimage.2020.117273
-
-NFacT uses XTRACT tools (xtract_blueprint) in its pipeline, please also cite:
-
-Warrington S, Bryant K, Khrapitchev A, Sallet J, Charquero-Ballester M, Douaud G, Jbabdi S*, Mars R*, Sotiropoulos SN* (2020) XTRACT - Standardised protocols for automated tractography and connectivity blueprints in the human and macaque brain. NeuroImage, 217(116923). DOI: 10.1016/j.neuroimage.2020.116923
-
 
 ---------------------------------------------------------------------
 ## Usage:
@@ -42,6 +39,7 @@ Usage:
        -rois         <left> <right>               Paths to the left and right medial wall masks (GIFTI)
 
     Optional arguments:
+       -nfactdir     <path>                         The directory which contains the nfact_averaging script (default: $MRCATDIR/projects/NFACT/nfact_code/nfact_py)
        -n_comp                                    Number of components used in the NMF decomposition (default = 100)
 
 
@@ -150,10 +148,11 @@ Usage:
        -ref          <path>                         The full path to the standard space target (e.g. MNI152 brain mask)
 
     Optional arguments:
+       -nfactdir     <path>                         The directory which contains the nfact_averaging script (default: $MRCATDIR/projects/NFACT/nfact_code/nfact_py)
+       -blueprintdir <path>                         The directory which contains the xtract_blueprint script (default: $FSLDIR/bin)
        -prefix       <str>                          Designate a prefix to the group-level output directory name (default directory name: <study>/nfact)
        -out          <folder>                       Path to output folder (default is to create subject-level output under the input subject directory and group-level under the study folder)
        -no_average                                  Do not perform connectivity matrix averaging - required for NMF (default averages across all subjects)
-
        -gpu                                         Use GPU version
        -nsamples                                    Number of samples per seed used in tractography (default = 1000)
        -res          <mm>                           Resolution of NMF volume components (Default = 2 mm)
@@ -183,7 +182,7 @@ Example call:
 
 nfact_preproc requires crossing-fibre diffusion modelled data (bedpostX), surface white-grey matter boundary surface files (seeds), medial wall surface masks (the 'ROIs'), diffusion space to standard space warp fields and a standard space reference brain mask. These files are specified relative to a parent 'study' directory.
 
-'''Note: in group-analysis, surfaces must maintain vertex correspondence across subjects to ensure proper averaging! This may be achieved two ways. 1) use the same seed and medial wall surfaces for all subjects (likely to introduce inaccuracies, particularly in human tractography). 2) use MSM to register surfaces for each subject to a standard space.'''
+'''Note: in group-analysis, surfaces must maintain vertex correspondence across subjects to ensure proper averaging! This may be achieved two ways. 1) use the same seed and medial wall surfaces for all subjects. 2) use MSM to register surfaces for each subject to a standard space.'''
 
 A set of subject IDs should be provided as a line separated text file (i.e. a subject ID per line) using the 'subject_list' argument.
 
@@ -214,7 +213,6 @@ These data could then be processed using nfact_preproc with the command call:
           -warps std2diff.nii.gz diff2std.nii.gz
           -ref <FSLDIR>/data/standard/MNI152_T1_2mm_brain.nii.gz
 
-'''Note: the directory structure may be built using symbolic links (soft links) using the `ln -s` command in bash.'''
 
 **Output from nfact_preproc**
 
@@ -253,7 +251,9 @@ Usage:
        -nfact_dir    <folder>                     Directory containing the target group-level NFacT connectivity matrix
 
     Optional arguments:
+       -nfactdir     <path>                         The directory which contains the nfact_dr script (default: $MRCATDIR/projects/NFACT/nfact_code/nfact_py)
        -out          <path>                       Output directory for dual regression results (default <nfact_dir>)
+           -n_cores      <int>                        The number of cores to use in dual regression (default = 1)
 
 Example call:
 
